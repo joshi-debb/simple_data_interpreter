@@ -1,0 +1,7 @@
+<¿
+Nombre: "reporte01",
+Grafica: "Barras",
+Titulo: "Reporte de Ventas Agosto",
+TituloX: "Producto",
+TituloY: "Total"
+?>

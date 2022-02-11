@@ -1,5 +1,6 @@
 from tkinter import filedialog, Tk
 
+
 def load_file():
     Tk().withdraw()
     File = filedialog.askopenfile(
@@ -7,12 +8,12 @@ def load_file():
         initialdir = "./",
         filetypes = [("Files","*.data")])
     if File is None:
-        File('No se ha seleccionado un archivo\n')
-        return None
+        return None 
     else:
         Data = File.read()
         File.close()
         return Data
+
 
 def load_instructions():
     Tk().withdraw()
@@ -21,8 +22,7 @@ def load_instructions():
         initialdir = "./",
         filetypes = [("Files","*.lfp")])
     if File is None:
-        File('No se ha seleccionado un archivo\n')
-        return None
+        return None   
     else:
         Instructions = File.read()
         File.close()
@@ -41,21 +41,20 @@ def main_menu():
         print('5. Salir')
         print('=======================')
 
-        opt = input('> ')
+        option = input('')
 
-        if opt == '1':
+        if option == '1':
             load_file()
-            continue
-        if opt == '2':
+        elif option == '2':
             load_instructions()
+        elif option == '3':
             continue
-        if opt == '3':
+        elif option == '4':
             continue
-        if opt == '4':
-            continue
-        if opt == '5':
+        elif option == '5':
             exit()
-        flag = False
+        else:
+            print("Elija una opcion entre 1 y 5")
 
 if __name__ == '__main__':
     main_menu()
