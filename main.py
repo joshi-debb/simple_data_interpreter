@@ -17,9 +17,10 @@ item_product = ''
 #clase Item para almacenar productos como objetos
 class Item:
     def __init__(self, item_name: str, item_price: float, item_sold: int) -> None:
-        self.item_name: str = item_name
+        self.item_name: str = item_name.upper()
         self.item_price: float = item_price
         self.item_sold: int = item_sold
+        self.item_earnings: float = (int(item_sold)*float(item_price))
 
 #clase market para almacenar meses y anio como objetos
 class Market:
@@ -32,6 +33,30 @@ class Market:
     #metodo que aniade un item a la lista de items
     def add_Item(self, item: Item):
         self.items_list.append(item)
+    
+    #metodo para imprimir en lista
+    def print_dates(self):
+        print('================================================')
+        print('Mes : {}'.format(str(self.month_name)))
+        print('Anio: {}'.format(str(self.year_name)))
+
+        print('Cantidad de items: {}'.format(len(self.items_list)))
+        
+        for Item in self.items_list:
+            print('Producto: {}, Precio: {}, Ventas: {}, Ganancias: {}'.format(Item.item_name,
+                                                                               Item.item_price,
+                                                                               Item.item_sold,
+                                                                               Item.item_earnings))
+        print('================================================')
+
+#metodo para realizar el ordenamiento burbuja
+def bubble_sort(data_to_print):
+    aux_data_to_print = data_to_print.copy()
+    for i in range(len(aux_data_to_print) - 1):
+        for j in range(0, len(aux_data_to_print) - i - 1):
+            if aux_data_to_print[j].item_earnings > aux_data_to_print[j + 1].item_earnings:
+                aux_data_to_print[j], aux_data_to_print[j + 1] = aux_data_to_print[j + 1], aux_data_to_print[j]
+    return aux_data_to_print
 
 #metodo para extraer los objetos separados por ;
 def extract_Objects(pointer: list):
@@ -110,9 +135,11 @@ def load_file():
         extract_month_year(data_base)
         print('Se ha cargado la data Exitosamente! \n')
 
+#metodo para imprimir datos en consola
 def print_datas():
     for markets in List_Of_Market:
         markets.print_dates()
+ 
 
 def main_menu():
     flag = True
@@ -132,7 +159,7 @@ def main_menu():
         if option == '1':
             load_file()
         elif option == '2':
-            continue
+            print_datas()
         elif option == '3':
             continue
         elif option == '4':
