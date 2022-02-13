@@ -1,6 +1,10 @@
-NOMBRE_MES : AÑO = (
+FeBrEro : 3500 = (
 [“producto 1”, 25, 33];
 [“producto 2”, 35.75, 10];
-[“producto 3”, 15, 170];
-[“producto 4”, 50, ];
+[“producto 3”, 15.25, 170];
+[“producto 4”, 50, 20];
+[“producto 5”, 25.80, 33];
+[“producto 6”, 35.75, 10];
+[“producto 7”, 15, 170];
+[“producto 8”, 50.15, 20]
 )
