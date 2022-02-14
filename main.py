@@ -1,5 +1,9 @@
+from os import startfile
+from jinja2 import Environment, select_autoescape
+from jinja2.loaders import FileSystemLoader
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
+from typing import List
 
 #listas globales
 data_base = []
@@ -29,12 +33,18 @@ class Market:
         self.year_name: int = year_name
         #lista de itemes para manipular las ventas
         self.items_list: list = []
-    
     #metodo que aniade un item a la lista de items
     def add_Item(self, item: Item):
         self.items_list.append(item)
     
-    #metodo para imprimir en lista
+    #metodo que invoca el metodo burbuja para ordenar objetos
+    def sort_datas_earnings(self):
+        return bubble_sort_earnings(self.items_list)
+    
+    def sort_datas_solds(self):
+        return bubble_sort_solds(self.up_in_solds)
+
+    #metodo para imprimir lista en consola
     def print_dates(self):
         print('================================================')
         print('Mes : {}'.format(str(self.month_name)))
@@ -49,14 +59,23 @@ class Market:
                                                                                Item.item_earnings))
         print('================================================')
 
-#metodo para realizar el ordenamiento burbuja
-def bubble_sort(data_to_print):
-    aux_data_to_print = data_to_print.copy()
-    for i in range(len(aux_data_to_print) - 1):
-        for j in range(0, len(aux_data_to_print) - i - 1):
-            if aux_data_to_print[j].item_earnings > aux_data_to_print[j + 1].item_earnings:
-                aux_data_to_print[j], aux_data_to_print[j + 1] = aux_data_to_print[j + 1], aux_data_to_print[j]
-    return aux_data_to_print
+
+
+#metodo para realizar el ordenamiento burbuja mayor a menor ganancias
+def bubble_sort_earnings(data_to_print: List[Item]):
+    for i in range(len(data_to_print) - 1):
+        for j in range(0, len(data_to_print) - i - 1):
+            if data_to_print[j].item_earnings < data_to_print[j + 1].item_earnings:
+                    data_to_print[j], data_to_print[j + 1] = data_to_print[j + 1], data_to_print[j]
+    return data_to_print
+
+#metodo para realizar el ordenamiento burbuja mayor a menor ventas
+def bubble_sort_solds(data_to_print: List[Item]):
+    for i in range(len(data_to_print) - 1):
+        for j in range(0, len(data_to_print) - i - 1):
+            if data_to_print[j].item_sold < data_to_print[j + 1].item_sold:
+                    data_to_print[j], data_to_print[j + 1] = data_to_print[j + 1], data_to_print[j]
+    return data_to_print
 
 #metodo para extraer los objetos separados por ;
 def extract_Objects(pointer: list):
@@ -139,7 +158,18 @@ def load_file():
 def print_datas():
     for markets in List_Of_Market:
         markets.print_dates()
- 
+
+def export_report():
+    env = Environment(loader=FileSystemLoader('templates/'),
+                      autoescape=select_autoescape(['html']))
+    template = env.get_template('report_template.html')
+
+    html_file = open('Oficial_Report.html', 'w+', encoding='utf-8')
+    html_file.write(template.render(List_Of_Market=List_Of_Market))
+    html_file.close()
+
+    startfile('Oficial_Report.html')
+
 
 def main_menu():
     flag = True
@@ -163,7 +193,7 @@ def main_menu():
         elif option == '3':
             continue
         elif option == '4':
-            continue
+            export_report()
         elif option == '5':
             flag = False
             print('=======================')

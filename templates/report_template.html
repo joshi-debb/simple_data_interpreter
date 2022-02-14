@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reporte De Ventas</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+
+    <header>
+    <h1 class="text-center">Reporte de ventas</h1>
+    {% for markets in List_Of_Market %}
+    <h6 class="text-center">Mes: {{ markets.month_name }}, Anio: {{ markets.year_name }}</h6>   
+    
+    </header>
+    <main class="container-fluid">
+      
+      <section class="mb-4">
+
+        <h2 class="text-center">Tabla de productos</h2>
+
+        <table class="table border">
+          <thead>
+            <tr>
+              <th scope="col">Nombre:</th>
+              <th scope="col">Precio:</th>
+              <th scope="col">Cantidad Ventas:</th>
+              <th scope="col">Ganancias:</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for Item in markets.sort_datas_earnings() %}
+            <tr>
+              <th class="table" scope="row">{{ Item.item_name }}</th>
+              <td class="table" scope="row">{{ Item.item_price }}</td>
+              <td class="table" scope="row">{{ Item.item_sold }}</td>
+              <th class="table" scope="row">{{ Item.item_earnings }}</th>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <h3 class="text-center">Rank De Venta De Productos</h3>
+  
+        <div class="row mt-2 mb-2 p-1">
+          <div class="fw-bold col-3 ">El Producto Mas Vendido:</div>
+          <div class="col-2">{{ markets.items_list[0].item_name }}</div>
+        </div>
+        
+        <div class="row mt-2 mb-2 p-1">
+          <div class="fw-bold col-3 ">El Producto Menos Vendido:</div>
+          <div class="col-2">{{ markets.items_list[0].item_name }}</div>
+        </div>
+
+        <div style='text-align:right'>
+        <h10 class="text-right">Nombre: Juan Josue Zuelta Beb</h10>
+        <h10 class="text-right">Carnet: 202006353</h10>
+        </div>
+      </section>
+    </main>
+    {% endfor %}
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj"
+      crossorigin="anonymous"
+    ></script>
+    
+  </body>
+</html>
