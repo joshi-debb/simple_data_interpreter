@@ -15,9 +15,9 @@
   <body>
 
     <header>
-    <h1 class="text-center">Reporte de ventas</h1>
+    <h1 class="text-center">REPORTE DE VENTAS</h1>
     {% for markets in List_Of_Market %}
-    <h6 class="text-center">Mes: {{ markets.month_name }}, Anio: {{ markets.year_name }}</h6>   
+    <h6 class="text-center">Mes: {{ markets.month_name }}, Año: {{ markets.year_name }}</h6>   
     
     </header>
     <main class="container-fluid">
@@ -46,17 +46,14 @@
             {% endfor %}
           </tbody>
         </table>
-
+        
         <h3 class="text-center">Rank De Venta De Productos</h3>
-  
-        <div class="row mt-2 mb-2 p-1">
-          <div class="fw-bold col-3 ">El Producto Mas Vendido:</div>
-          <div class="col-2">{{ markets.items_list[0].item_name }}</div>
-        </div>
         
         <div class="row mt-2 mb-2 p-1">
+          <div class="fw-bold col-3 ">El Producto Mas Vendido:</div>
+          <div class="col-2">{{ markets.sort_datas_up_solds() }}</div>
           <div class="fw-bold col-3 ">El Producto Menos Vendido:</div>
-          <div class="col-2">{{ markets.items_list[0].item_name }}</div>
+          <div class="col-2">{{ markets.sort_datas_low_solds() }}</div>
         </div>
 
         <div style='text-align:right'>

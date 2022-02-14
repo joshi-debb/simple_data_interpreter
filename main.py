@@ -7,23 +7,28 @@ from typing import List
 
 #listas globales
 data_base = []
+directions_base = []
 month = []
 year = []
 List_Of_Market = []
+List_Of_Graphs = []
 item_products = []
+item_directions = []
 item_subject = []
+item_subject2 = []
 
 #variables globales
 month_Name = ''
 year_Name = ''
 item_product = ''
+item_direction = ''
 
 #clase Item para almacenar productos como objetos
 class Item:
     def __init__(self, item_name: str, item_price: float, item_sold: int) -> None:
-        self.item_name: str = item_name.upper()
-        self.item_price: float = item_price
-        self.item_sold: int = item_sold
+        self.item_name: str = str (item_name.upper())
+        self.item_price: float = float (item_price)
+        self.item_sold: int = int(item_sold)
         self.item_earnings: float = (int(item_sold)*float(item_price))
 
 #clase market para almacenar meses y anio como objetos
@@ -33,6 +38,7 @@ class Market:
         self.year_name: int = year_name
         #lista de itemes para manipular las ventas
         self.items_list: list = []
+
     #metodo que aniade un item a la lista de items
     def add_Item(self, item: Item):
         self.items_list.append(item)
@@ -40,11 +46,18 @@ class Market:
     #metodo que invoca el metodo burbuja para ordenar objetos
     def sort_datas_earnings(self):
         return bubble_sort_earnings(self.items_list)
-    
-    def sort_datas_solds(self):
-        return bubble_sort_solds(self.up_in_solds)
 
-    #metodo para imprimir lista en consola
+    #devuelve el item con el mayor numero de ventas
+    def sort_datas_up_solds(self):
+        bubble_sort_solds(self.items_list)
+        return (self.items_list[0].item_name)
+
+    #devuelve el item con el menor numero de ventas
+    def sort_datas_low_solds(self):
+        bubble_sort_solds(self.items_list)
+        return (self.items_list[len(self.items_list)-1].item_name)
+
+        #metodo para imprimir lista en consola
     def print_dates(self):
         print('================================================')
         print('Mes : {}'.format(str(self.month_name)))
@@ -59,15 +72,48 @@ class Market:
                                                                                Item.item_earnings))
         print('================================================')
 
+#clase Item para instrucciones como objetos
+class Direction:
+    def __init__(self, graph_name: str, graph_type: str, graph_title:
+                                   str, graph_title_X: str, graph_title_Y: str) -> None:
+        self.graph_name: str = graph_name
+        self.graph_type: str = graph_type
+        self.graph_title: str = graph_title
+        self.graph_title_X: str = graph_title_X
+        self.graph_title_Y: str = graph_title_Y
+
+class Graphics:
+    def __init__(self) -> None:
+        #lista de instrucciones para manipular las graficas
+        self.instructions_list: list = []
+    
+    #metodo que aniade un item a la lista de items
+    def add_Direction(self, direction: Direction):
+        self.instructions_list.append(direction)
+
+    def print_dates2(self):
+        for direction in self.instructions_list:
+            print('================================================')
+
+            print('Nombre: {}, Tipo: {}, Titulo: {}, TituloX: {}, TituloY: {}'.format(
+                                                                                      direction.graph_name,
+                                                                                      direction.graph_type,
+                                                                                      direction.graph_title,
+                                                                                      direction.graph_title_X,
+                                                                                      direction.graph_title_Y)
+                                                                                      )
+            print('================================================')
+
 
 
 #metodo para realizar el ordenamiento burbuja mayor a menor ganancias
 def bubble_sort_earnings(data_to_print: List[Item]):
-    for i in range(len(data_to_print) - 1):
-        for j in range(0, len(data_to_print) - i - 1):
-            if data_to_print[j].item_earnings < data_to_print[j + 1].item_earnings:
-                    data_to_print[j], data_to_print[j + 1] = data_to_print[j + 1], data_to_print[j]
-    return data_to_print
+    data_earnings = data_to_print.copy()
+    for i in range(len(data_earnings) - 1):
+        for j in range(0, len(data_earnings) - i - 1):
+            if data_earnings[j].item_earnings < data_earnings[j + 1].item_earnings:
+                    data_earnings[j], data_earnings[j + 1] = data_earnings[j + 1], data_earnings[j]
+    return data_earnings
 
 #metodo para realizar el ordenamiento burbuja mayor a menor ventas
 def bubble_sort_solds(data_to_print: List[Item]):
@@ -77,10 +123,68 @@ def bubble_sort_solds(data_to_print: List[Item]):
                     data_to_print[j], data_to_print[j + 1] = data_to_print[j + 1], data_to_print[j]
     return data_to_print
 
+
+#metodo para extraer instrucciones separadas por ,
+def extract_directions(pointer: list): 
+    #crear lista de objetos,unidos,sin espacios y separados por '\n'
+    directions_list = item_direction.join(pointer).split('\n')
+    #print(directions_list)
+    #recorrer lista de objetos
+    for item in directions_list:
+        #separar posiciones por ','
+        position = item.split(',')
+        #la priemra posicion deber removerse el 'NOMBRE' , ':' , '¿' , '"' y quitar espacios
+        name = position[0].replace('Nombre','').replace(':','').replace('¿','').replace('"','').strip()
+        #la segunda posicion deber removerse el 'NOMBRE' , ':' , '"' y quitar espacios
+        type = position[1].replace('Grafica','').replace(':','').replace('"','').strip()
+        #la segunda posicion deber removerse el 'NOMBRE' , ':' , '"' y quitar espacios
+        title = position[2].replace('Titulo','').replace(':','').replace('"','').strip()
+        #la segunda posicion deber removerse el 'NOMBRE' , ':' , '"' y quitar espacios
+        titleX = position[3].replace('TituloX','').replace(':','').replace('"','').strip()
+        #la priemra posicion deber removerse el 'NOMBRE' , ':' , '?' , '"' y quitar espacios
+        titleY = position[4].replace('TituloY','').replace(':','').replace('"','').replace('?','').strip()
+        #print(name)
+        #print(type)
+        #print(title)
+        #print(titleX)
+        #print(titleY)
+
+        #aniadimos los datos al constructor de items
+        item_directions.append(Direction(name,type,title,titleX,titleY))
+        #retornar lista
+    return item_directions
+        
+#metodo para extraer el anio y el mes
+def extract_keys(directions_base: list):
+    #apuntador en la lista database
+    extract_pointer = directions_base[0]
+    graphics = Graphics()
+    #almacenar el objeto en la lista de general de graficas
+    List_Of_Graphs.append(graphics)
+    #no guardar nada que este antes del '<'
+    while extract_pointer != '<':
+        directions_base.pop(0)
+        extract_pointer = directions_base[0]
+    #reiniciar los punteros
+    directions_base.pop(0)
+    extract_pointer = directions_base[0]
+    #no guardar nada que este despues de '>'
+    while extract_pointer != '>':
+        #almacenar los objetos separados por ,
+        item_subject2.append(directions_base.pop(0))
+        extract_pointer = directions_base[0]
+    #mandar los objetos para parseo
+    for Direction in extract_directions(item_subject2):
+        #despues del parseo agrega los items
+        #a una lista de la clase Graphics
+        graphics.add_Direction(Direction)
+
+
 #metodo para extraer los objetos separados por ;
 def extract_Objects(pointer: list):
-    #crear lista de objetos,unidos,sin espacion y separados por ;
+    #crear lista de objetos,unidos,sin espacios y separados por ;
     product_list = item_product.join(pointer).strip().split(';')
+    print (product_list)
     #recorrer lista de objetos
     for item in product_list:
         #separar posiciones por ','
@@ -135,7 +239,7 @@ def extract_month_year(data_base: list):
         #a una lista de la clase Market
         markets.add_Item(Item)
 
-def load_file():
+def load_datas():
     try:
         Tk().withdraw()
         filename = askopenfilename()
@@ -154,10 +258,29 @@ def load_file():
         extract_month_year(data_base)
         print('Se ha cargado la data Exitosamente! \n')
 
+def load_directions():
+    try:
+        Tk().withdraw()
+        filename = askopenfilename()
+        input_file = open(filename, 'r+', encoding='utf-8')
+    except FileNotFoundError:
+        print('Error al cargar el archivo \n')
+    else:
+        #leer el archivo linea por linea
+        for line in input_file.readlines():
+            for item in line.strip():
+                #por cada linea crea un objeto
+                #lo almacena en la lista data_base
+                directions_base.append(item)
+        print(directions_base)
+        #mandamos a extraer el mes y el anio
+        extract_keys(directions_base)
+        print('Se han cargado las instrucciones Exitosamente! \n')
+
 #metodo para imprimir datos en consola
 def print_datas():
-    for markets in List_Of_Market:
-        markets.print_dates()
+    for graphics in List_Of_Graphs:
+        graphics.print_dates2()
 
 def export_report():
     env = Environment(loader=FileSystemLoader('templates/'),
@@ -187,11 +310,11 @@ def main_menu():
         option = input('')
 
         if option == '1':
-            load_file()
+            load_datas()
         elif option == '2':
-            print_datas()
+            load_directions()
         elif option == '3':
-            continue
+            print_datas()
         elif option == '4':
             export_report()
         elif option == '5':
