@@ -19,14 +19,6 @@ item_products = []
 item_directions = []
 item_subject = []
 item_subject2 = []
-ejeXB = []
-ejeYB = []
-ejeXL = []
-ejeYL = []
-ejeXP = []
-ejeXP = []
-
-
 
 #variables globales
 month_Name = ''
@@ -115,30 +107,36 @@ class Graphics:
                                                                                       )
             print('================================================')
     
+
     def plot_graphics(self):
+
+        x = []
+        y = []
+
+        plt.rcdefaults()
         figB, axB = plt.subplots()
         figL, axL = plt.subplots()
         figP, axP = plt.subplots()
 
         for markets in List_Of_Market:
             for item in markets.items_list:
-            
-                # Datos Gráfica de Barras
-                ejeXB = item.item_name
-                ejeYB = item.item_sold
+                #llenando las listas con los datos de los objetos
+                x.append(item.item_name)
+                y.append(item.item_sold * item.item_price)
 
-                # Datos Gráfica de Líneas
-                ejeXL = item.item_name
-                ejeYL = item.item_sold
-
-                # Datos Gráfica de pie
-                ejeXP = item.item_name
-                ejeYP = item.item_sold
-            
-
+        # Datos Gráfica de Barras
+        ejeXB = x
+        ejeYB = y
+        # Datos Gráfica de Líneas
+        ejeXL = x
+        ejeYL = y
+        # Datos Gráfica de pie
+        ejeXP = x
+        ejeYP = y
+        
         for direction in self.instructions_list:
             
-            if direction.graph_type == "Barras":
+            if direction.graph_type.upper() == "BARRAS":
                 # Datos de los ejes de la gráfica de barras, se usa función bar()   
                 axB.bar(ejeXB, ejeYB) 
                 # Titulos de los ejes  
@@ -150,7 +148,7 @@ class Graphics:
 
                 figB.savefig('./GraficaBarras.png')
 
-            elif direction.graph_type == "Lineas":
+            elif direction.graph_type.upper() == "LINEAS":
                 # Configuración de los ejes de la gráfica de lineas, se usa función plot()
                 axL.plot(ejeXL, ejeYL) 
                 # Titulos de los ejes
@@ -162,9 +160,9 @@ class Graphics:
 
                 figL.savefig('./graficaLineas.png')
 
-            elif direction.graph_type == "Pie":
+            elif direction.graph_type.upper() == "PIE":
                 # Configuración de los ejes de la gráfica de lineas, se usa función plot()
-                axP.pie(ejeXP, ejeYP) 
+                axP.pie(ejeYP, labels = ejeXP, autopct="%0.1f %%") 
 
                 # Titulos de los ejes
                 axP.set_xlabel(direction.graph_title_X, fontdict = {'fontweight':'bold', 'fontsize':13, 'color':'blue'})
@@ -177,7 +175,6 @@ class Graphics:
             else:
                 print("Especifique un tipo valido de grafica")
                 print("===>Grafica: Barras, Lineas o Pie<===")
-
 
 
 #metodo para realizar el ordenamiento burbuja mayor a menor ganancias
@@ -217,12 +214,6 @@ def extract_directions(pointer: list):
         titleX = position[3].replace('TituloX','').replace(':','').replace('"','').strip()
         #la priemra posicion deber removerse el 'NOMBRE' , ':' , '?' , '"' y quitar espacios
         titleY = position[4].replace('TituloY','').replace(':','').replace('"','').replace('?','').strip()
-        #print(name)
-        #print(type)
-        #print(title)
-        #print(titleX)
-        #print(titleY)
-
         #aniadimos los datos al constructor de items
         item_directions.append(Direction(name,type,title,titleX,titleY))
         #retornar lista
@@ -313,6 +304,7 @@ def extract_month_year(data_base: list):
         #a una lista de la clase Market
         markets.add_Item(Item)
 
+
 def load_datas():
     try:
         Tk().withdraw()
@@ -356,21 +348,26 @@ def print_datas():
     for graphics in List_Of_Graphs:
         graphics.print_dates2()
 
+#metodo para exportar a pdf
 def export_report():
+    #ambiente generado por la libreria jinja2
     env = Environment(loader=FileSystemLoader('templates/'),
                       autoescape=select_autoescape(['html']))
+    #se selecciona la platilla a partir de la cual se generara el reprote
     template = env.get_template('report_template.html')
-
+    #se crea el archivo html a partir de la platilla
     html_file = open('Oficial_Report.html', 'w+', encoding='utf-8')
     html_file.write(template.render(List_Of_Market=List_Of_Market))
     html_file.close()
-
+    #comando para iniciar automaticamente el html
     startfile('Oficial_Report.html')
 
 #metodo para imprimir grafiacas en formato png
 def export_graphics():
     for graphics in List_Of_Graphs:
         graphics.plot_graphics()
+
+        
 
 def main_menu():
     flag = True
