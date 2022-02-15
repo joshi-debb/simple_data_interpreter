@@ -1,9 +1,12 @@
+import matplotlib.pyplot as plt
+
 from os import startfile
 from jinja2 import Environment, select_autoescape
 from jinja2.loaders import FileSystemLoader
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
 from typing import List
+
 
 #listas globales
 data_base = []
@@ -16,6 +19,14 @@ item_products = []
 item_directions = []
 item_subject = []
 item_subject2 = []
+ejeXB = []
+ejeYB = []
+ejeXL = []
+ejeYL = []
+ejeXP = []
+ejeXP = []
+
+
 
 #variables globales
 month_Name = ''
@@ -103,6 +114,69 @@ class Graphics:
                                                                                       direction.graph_title_Y)
                                                                                       )
             print('================================================')
+    
+    def plot_graphics(self):
+        figB, axB = plt.subplots()
+        figL, axL = plt.subplots()
+        figP, axP = plt.subplots()
+
+        for markets in List_Of_Market:
+            for item in markets.items_list:
+            
+                # Datos Gráfica de Barras
+                ejeXB = item.item_name
+                ejeYB = item.item_sold
+
+                # Datos Gráfica de Líneas
+                ejeXL = item.item_name
+                ejeYL = item.item_sold
+
+                # Datos Gráfica de pie
+                ejeXP = item.item_name
+                ejeYP = item.item_sold
+            
+
+        for direction in self.instructions_list:
+            
+            if direction.graph_type == "Barras":
+                # Datos de los ejes de la gráfica de barras, se usa función bar()   
+                axB.bar(ejeXB, ejeYB) 
+                # Titulos de los ejes  
+                axB.set_xlabel(direction.graph_title_X, fontdict = {'fontweight':'bold', 'fontsize':13, 'color':'blue'}) # Titulos de los ejes
+                axB.set_ylabel(direction.graph_title_Y, fontdict = {'fontweight':'bold', 'fontsize':13, 'color':'red'})
+
+                axB.grid(axis='y', color='lightgray', linestyle='dashed')
+                axB.set_title(direction.graph_title)
+
+                figB.savefig('./GraficaBarras.png')
+
+            elif direction.graph_type == "Lineas":
+                # Configuración de los ejes de la gráfica de lineas, se usa función plot()
+                axL.plot(ejeXL, ejeYL) 
+                # Titulos de los ejes
+                axL.set_xlabel(direction.graph_title_X, fontdict = {'fontweight':'bold', 'fontsize':13, 'color':'blue'})
+                axL.set_ylabel(direction.graph_title_Y, fontdict = {'fontweight':'bold', 'fontsize':13, 'color':'red'})
+
+                axL.grid(axis='y', color='darkgray', linestyle='dashed')
+                axL.set_title(direction.graph_title)
+
+                figL.savefig('./graficaLineas.png')
+
+            elif direction.graph_type == "Pie":
+                # Configuración de los ejes de la gráfica de lineas, se usa función plot()
+                axP.pie(ejeXP, ejeYP) 
+
+                # Titulos de los ejes
+                axP.set_xlabel(direction.graph_title_X, fontdict = {'fontweight':'bold', 'fontsize':13, 'color':'blue'})
+                axP.set_ylabel(direction.graph_title_Y, fontdict = {'fontweight':'bold', 'fontsize':13, 'color':'red'})
+
+                axP.grid(axis='y', color='darkgray', linestyle='dashed')
+                axP.set_title(direction.graph_title)
+
+                figP.savefig('./graficaPie.png')
+            else:
+                print("Especifique un tipo valido de grafica")
+                print("===>Grafica: Barras, Lineas o Pie<===")
 
 
 
@@ -293,6 +367,10 @@ def export_report():
 
     startfile('Oficial_Report.html')
 
+#metodo para imprimir grafiacas en formato png
+def export_graphics():
+    for graphics in List_Of_Graphs:
+        graphics.plot_graphics()
 
 def main_menu():
     flag = True
@@ -314,7 +392,7 @@ def main_menu():
         elif option == '2':
             load_directions()
         elif option == '3':
-            print_datas()
+            export_graphics()
         elif option == '4':
             export_report()
         elif option == '5':
