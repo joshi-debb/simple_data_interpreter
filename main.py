@@ -1,29 +1,49 @@
+#llbreria para creacion de graficas
 import matplotlib.pyplot as plt
-
+#librerias para creacion y exportacion a HTML
 from os import startfile
 from jinja2 import Environment, select_autoescape
 from jinja2.loaders import FileSystemLoader
+#libreria para abrir ventanas en escritorio
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
+#libreria para importar Listas de tipo Type[List]
 from typing import List
 
 
 #listas globales
+#archivo .data almacenado linea por linea
 data_base = []
+#archivo .lfp almacenado linea por linea
 directions_base = []
+#listado de meses
 month = []
+#listado de anios
 year = []
+#lista de listas de objetos de productos
 List_Of_Market = []
+#lista de listas de instrucciones
 List_Of_Graphs = []
+#listado de productos como objetos
 item_products = []
+#listado de instrucciones como objetos
 item_directions = []
+#lista de objetos para mandarlos al parseo
 item_subject = []
+#lista de instrucciones para mandarlos al parse
 item_subject2 = []
+#listas de datos para imprimir graficas
+x_data_graphics = []
+y_data_graphics = []
 
 #variables globales
+#aux para parseo de nombre de mes
 month_Name = ''
+#aux para parseo de nombre de anio
 year_Name = ''
+#aux para parseo de objetos
 item_product = ''
+#aux para parseo de instrucciones
 item_direction = ''
 
 #clase Item para almacenar productos como objetos
@@ -60,21 +80,6 @@ class Market:
         bubble_sort_solds(self.items_list)
         return (self.items_list[len(self.items_list)-1].item_name)
 
-        #metodo para imprimir lista en consola
-    def print_dates(self):
-        print('================================================')
-        print('Mes : {}'.format(str(self.month_name)))
-        print('Anio: {}'.format(str(self.year_name)))
-
-        print('Cantidad de items: {}'.format(len(self.items_list)))
-        
-        for Item in self.items_list:
-            print('Producto: {}, Precio: {}, Ventas: {}, Ganancias: {}'.format(Item.item_name,
-                                                                               Item.item_price,
-                                                                               Item.item_sold,
-                                                                               Item.item_earnings))
-        print('================================================')
-
 #clase Item para instrucciones como objetos
 class Direction:
     def __init__(self, graph_name: str, graph_type: str, graph_title:
@@ -94,45 +99,31 @@ class Graphics:
     def add_Direction(self, direction: Direction):
         self.instructions_list.append(direction)
 
-    def print_dates2(self):
-        for direction in self.instructions_list:
-            print('================================================')
-
-            print('Nombre: {}, Tipo: {}, Titulo: {}, TituloX: {}, TituloY: {}'.format(
-                                                                                      direction.graph_name,
-                                                                                      direction.graph_type,
-                                                                                      direction.graph_title,
-                                                                                      direction.graph_title_X,
-                                                                                      direction.graph_title_Y)
-                                                                                      )
-            print('================================================')
-    
-
     def plot_graphics(self):
 
-        x = []
-        y = []
-
         plt.rcdefaults()
+        #subploteo de grafica de barras
         figB, axB = plt.subplots()
+        #subploteo de grafica de lineas
         figL, axL = plt.subplots()
+        #subploteo de grafica de pastel
         figP, axP = plt.subplots()
 
         for markets in List_Of_Market:
             for item in markets.items_list:
                 #llenando las listas con los datos de los objetos
-                x.append(item.item_name)
-                y.append(item.item_sold * item.item_price)
+                x_data_graphics.append(item.item_name)
+                y_data_graphics.append(item.item_sold * item.item_price)
 
         # Datos Gráfica de Barras
-        ejeXB = x
-        ejeYB = y
+        ejeXB = x_data_graphics
+        ejeYB = y_data_graphics
         # Datos Gráfica de Líneas
-        ejeXL = x
-        ejeYL = y
+        ejeXL = x_data_graphics
+        ejeYL = y_data_graphics
         # Datos Gráfica de pie
-        ejeXP = x
-        ejeYP = y
+        ejeXP = x_data_graphics
+        ejeYP = y_data_graphics
         
         for direction in self.instructions_list:
             
@@ -147,6 +138,7 @@ class Graphics:
                 axB.set_title(direction.graph_title)
 
                 figB.savefig('./GraficaBarras.png')
+                print("Se Ha Generado Un Grafico De Barras!")
 
             elif direction.graph_type.upper() == "LINEAS":
                 # Configuración de los ejes de la gráfica de lineas, se usa función plot()
@@ -159,9 +151,10 @@ class Graphics:
                 axL.set_title(direction.graph_title)
 
                 figL.savefig('./graficaLineas.png')
+                print("Se Ha Generado Un Grafico De Lineas!")
 
-            elif direction.graph_type.upper() == "PIE":
-                # Configuración de los ejes de la gráfica de lineas, se usa función plot()
+            elif direction.graph_type.upper() == "PIE" or direction.graph_type.upper() == "PASTEL":
+                # Configuración de los trazos de la grafica de pastel, se usa función pie()
                 axP.pie(ejeYP, labels = ejeXP, autopct="%0.1f %%") 
 
                 # Titulos de los ejes
@@ -172,6 +165,7 @@ class Graphics:
                 axP.set_title(direction.graph_title)
 
                 figP.savefig('./graficaPie.png')
+                print("Se Ha Generado Un Grafico De Pastel!")
             else:
                 print("Especifique un tipo valido de grafica")
                 print("===>Grafica: Barras, Lineas o Pie<===")
@@ -249,7 +243,7 @@ def extract_keys(directions_base: list):
 def extract_Objects(pointer: list):
     #crear lista de objetos,unidos,sin espacios y separados por ;
     product_list = item_product.join(pointer).strip().split(';')
-    print (product_list)
+    #print (product_list)
     #recorrer lista de objetos
     for item in product_list:
         #separar posiciones por ','
@@ -338,15 +332,10 @@ def load_directions():
                 #por cada linea crea un objeto
                 #lo almacena en la lista data_base
                 directions_base.append(item)
-        print(directions_base)
+        #print(directions_base)
         #mandamos a extraer el mes y el anio
         extract_keys(directions_base)
         print('Se han cargado las instrucciones Exitosamente! \n')
-
-#metodo para imprimir datos en consola
-def print_datas():
-    for graphics in List_Of_Graphs:
-        graphics.print_dates2()
 
 #metodo para exportar a pdf
 def export_report():
@@ -365,9 +354,8 @@ def export_report():
 #metodo para imprimir grafiacas en formato png
 def export_graphics():
     for graphics in List_Of_Graphs:
+        #invocando metodo para imprimir graficas
         graphics.plot_graphics()
-
-        
 
 def main_menu():
     flag = True
