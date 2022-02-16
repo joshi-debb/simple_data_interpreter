@@ -9,7 +9,8 @@ from tkinter import Tk
 from tkinter.filedialog import askopenfilename
 #libreria para importar Listas de tipo Type[List]
 from typing import List
-
+#libreria para  para cargar imágenes desde archivos y para crear nuevas imágenes
+from PIL import Image
 
 #listas globales
 #archivo .data almacenado linea por linea
@@ -49,8 +50,8 @@ item_direction = ''
 #clase Item para almacenar productos como objetos
 class Item:
     def __init__(self, item_name: str, item_price: float, item_sold: int) -> None:
-        self.item_name: str = str (item_name.upper())
-        self.item_price: float = float (item_price)
+        self.item_name: str = item_name.upper()
+        self.item_price: float = float(item_price)
         self.item_sold: int = int(item_sold)
         self.item_earnings: float = (int(item_sold)*float(item_price))
 
@@ -131,40 +132,66 @@ class Graphics:
                 # Datos de los ejes de la gráfica de barras, se usa función bar()   
                 axB.bar(ejeXB, ejeYB) 
                 # Titulos de los ejes  
-                axB.set_xlabel(direction.graph_title_X, fontdict = {'fontweight':'bold', 'fontsize':13, 'color':'blue'}) # Titulos de los ejes
-                axB.set_ylabel(direction.graph_title_Y, fontdict = {'fontweight':'bold', 'fontsize':13, 'color':'red'})
+                axB.set_xlabel(direction.graph_title_X, fontdict = { 'fontsize':12, 'color':'blue'})
+                axB.set_ylabel(direction.graph_title_Y, fontdict = { 'fontsize':12, 'color':'green'})
 
                 axB.grid(axis='y', color='lightgray', linestyle='dashed')
-                axB.set_title(direction.graph_title)
 
-                figB.savefig('./GraficaBarras.png')
+                for markets in List_Of_Market:
+                    #tomando los atributos de la clase Market
+                    title_mes = markets.month_name
+                    title_anio = markets.year_name 
+                    
+                axB.set_title(direction.graph_title.upper() +'\n'+ title_mes + title_anio , fontdict = { 'fontweight':'bold', 'fontsize':16, 'color':'red'})
+
+                figB.savefig('./{}.png'.format(direction.graph_name))
+
+                Graphic_Barra = Image.open('./{}.png'.format(direction.graph_name))
+                Graphic_Barra.show()
+
                 print("Se Ha Generado Un Grafico De Barras!")
 
             elif direction.graph_type.upper() == "LINEAS":
                 # Configuración de los ejes de la gráfica de lineas, se usa función plot()
                 axL.plot(ejeXL, ejeYL) 
                 # Titulos de los ejes
-                axL.set_xlabel(direction.graph_title_X, fontdict = {'fontweight':'bold', 'fontsize':13, 'color':'blue'})
-                axL.set_ylabel(direction.graph_title_Y, fontdict = {'fontweight':'bold', 'fontsize':13, 'color':'red'})
+                axL.set_xlabel(direction.graph_title_X, fontdict = {'fontsize':12, 'color':'blue'})
+                axL.set_ylabel(direction.graph_title_Y, fontdict = {'fontsize':12, 'color':'green'})
 
                 axL.grid(axis='y', color='darkgray', linestyle='dashed')
-                axL.set_title(direction.graph_title)
 
-                figL.savefig('./graficaLineas.png')
+                for markets in List_Of_Market:
+                    #tomando los atributos de la clase Market
+                    title_mes = markets.month_name
+                    title_anio = markets.year_name
+
+                axL.set_title(direction.graph_title.upper() +'\n'+ title_mes + title_anio , fontdict = { 'fontweight':'bold', 'fontsize':16, 'color':'red'})
+
+                figL.savefig('./{}.png'.format(direction.graph_name))
+
+                Graphic_Line = Image.open('./{}.png'.format(direction.graph_name))
+                Graphic_Line.show()
+
                 print("Se Ha Generado Un Grafico De Lineas!")
 
             elif direction.graph_type.upper() == "PIE" or direction.graph_type.upper() == "PASTEL":
                 # Configuración de los trazos de la grafica de pastel, se usa función pie()
                 axP.pie(ejeYP, labels = ejeXP, autopct="%0.1f %%") 
 
-                # Titulos de los ejes
-                axP.set_xlabel(direction.graph_title_X, fontdict = {'fontweight':'bold', 'fontsize':13, 'color':'blue'})
-                axP.set_ylabel(direction.graph_title_Y, fontdict = {'fontweight':'bold', 'fontsize':13, 'color':'red'})
-
                 axP.grid(axis='y', color='darkgray', linestyle='dashed')
-                axP.set_title(direction.graph_title)
 
-                figP.savefig('./graficaPie.png')
+                for markets in List_Of_Market:
+                    #tomando los atributos de la clase Market
+                    title_mes = markets.month_name
+                    title_anio = markets.year_name
+
+                axP.set_title(direction.graph_title.upper() +'\n'+ title_mes + title_anio , fontdict = { 'fontweight':'bold', 'fontsize':16, 'color':'red'})
+
+                figP.savefig('./{}.png'.format(direction.graph_name))
+
+                Graphic_Pie = Image.open('./{}.png'.format(direction.graph_name))
+                Graphic_Pie.show()
+
                 print("Se Ha Generado Un Grafico De Pastel!")
             else:
                 print("Especifique un tipo valido de grafica")
@@ -192,7 +219,7 @@ def bubble_sort_solds(data_to_print: List[Item]):
 #metodo para extraer instrucciones separadas por ,
 def extract_directions(pointer: list): 
     #crear lista de objetos,unidos,sin espacios y separados por '\n'
-    directions_list = item_direction.join(pointer).split('\n')
+    directions_list = item_direction.join(pointer).replace('\n',';').split(';')
     #print(directions_list)
     #recorrer lista de objetos
     for item in directions_list:
@@ -200,6 +227,7 @@ def extract_directions(pointer: list):
         position = item.split(',')
         #la priemra posicion deber removerse el 'NOMBRE' , ':' , '¿' , '"' y quitar espacios
         name = position[0].replace('Nombre','').replace(':','').replace('¿','').replace('"','').strip()
+        #print(name)
         #la segunda posicion deber removerse el 'NOMBRE' , ':' , '"' y quitar espacios
         type = position[1].replace('Grafica','').replace(':','').replace('"','').strip()
         #la segunda posicion deber removerse el 'NOMBRE' , ':' , '"' y quitar espacios
@@ -238,7 +266,6 @@ def extract_keys(directions_base: list):
         #a una lista de la clase Graphics
         graphics.add_Direction(Direction)
 
-
 #metodo para extraer los objetos separados por ;
 def extract_Objects(pointer: list):
     #crear lista de objetos,unidos,sin espacios y separados por ;
@@ -250,6 +277,7 @@ def extract_Objects(pointer: list):
         position = item.split(',')
         #la priemra posicion deber removerse el '[' y '"' y quitar espacios
         name = position[0].replace('[','').replace('"','').strip()
+        #print(name)
         #segunda posicon debe removerse los espacios
         price = position[1].strip()
         #tercera posicion debe removerse el ']' y quitar espacios
@@ -298,7 +326,6 @@ def extract_month_year(data_base: list):
         #a una lista de la clase Market
         markets.add_Item(Item)
 
-
 def load_datas():
     try:
         Tk().withdraw()
@@ -346,7 +373,7 @@ def export_report():
     template = env.get_template('report_template.html')
     #se crea el archivo html a partir de la platilla
     html_file = open('Oficial_Report.html', 'w+', encoding='utf-8')
-    html_file.write(template.render(List_Of_Market=List_Of_Market))
+    html_file.write(template.render(List_Of_Market = List_Of_Market))
     html_file.close()
     #comando para iniciar automaticamente el html
     startfile('Oficial_Report.html')
@@ -356,6 +383,7 @@ def export_graphics():
     for graphics in List_Of_Graphs:
         #invocando metodo para imprimir graficas
         graphics.plot_graphics()
+
 
 def main_menu():
     flag = True
