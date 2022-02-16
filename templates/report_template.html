@@ -1,73 +1,141 @@
 <!DOCTYPE html>
 <html lang="es">
   <head>
+
+    <style>
+      
+      header{
+        background-color: #EE6055;
+        border: 0.1px solid black;
+        padding: 20px 20px;
+        text-align: center;
+        font-weight: bold;
+        width: 80%;
+        border-radius: 20px;
+      }
+
+      body{
+        background-color: #FFD97D;
+        text-align: center;
+        font-family: Arial, Helvetica, sans-serif;
+        font-style: italic;
+        margin: 50px auto;
+      }
+
+      #texto1{
+        font-size: medium;
+        background-color: #eb9234;
+        border: 0.1px solid black;
+        padding: 20px 20px;
+        text-align: center;
+        width: 80%;
+        border-radius: 20px;
+      }
+
+      #texto2{
+        text-align: right;
+        font-size: small;
+        font-weight: bolder;
+        width: 90%;
+      }
+
+      #headtable{
+        text-align: center;
+        font-size: large;
+        font-weight: bolder;
+      }
+      
+      #bodytable{
+        text-align: center;
+        font-size: small;
+        font-weight: lighter;
+
+      }
+
+      #subBody{
+
+        background-color: #e0b653;
+        text-align: center;
+        font-family: Arial, Helvetica, sans-serif;
+        font-style: italic;
+        margin: 50px auto;
+        width: 80%;
+        border-radius: 20px;
+        border: 0.1px solid black;
+      }
+
+      table{
+
+        align-items: center;
+        border: 0.1px solid black;
+        background-color: #60D394;
+        font-style: italic;
+        padding: 20px 20px;
+        width: 80%;
+        border-radius: 20px;
+      }
+
+    </style>
+
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Reporte De Ventas</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-      integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We"
-      crossorigin="anonymous"
-    />
+
+    <title >Reporte De Ventas</title>
+
   </head>
   <body>
 
-    <header>
-    <h1 class="text-center">REPORTE DE VENTAS</h1>
+    <header style="margin: 0 auto">
+    <h1 class="text-center" style="font-size: xx-large;">REPORTE DE VENTAS</h1>
     {% for markets in List_Of_Market %}
-    <h6 class="text-center">MES: {{ markets.month_name }}, AÑO: {{ markets.year_name }}</h6>   
+    <h5 class="text-center">MES: {{ markets.month_name }} AÑO {{ markets.year_name }}</h5>   
     
     </header>
-    <main class="container-fluid">
+    <main>
       
-      <section class="mb-4">
+      <section id = "subBody">
 
-        <h2 class="text-center">Tabla de productos</h2>
+        <h1 class="text-center">Tabla De Productos</h1>
 
-        <table class="table border">
-          <thead>
-            <tr>
-              <th scope="col">Nombre:</th>
-              <th scope="col">Precio:</th>
-              <th scope="col">Cantidad Ventas:</th>
-              <th scope="col">Ganancias:</th>
+        <table style="margin: 0 auto" >
+          <thead >
+            <tr id = "headtable">
+              <th>Nombre:</th>
+              <th>Precio:</th>
+              <th>Cantidad Ventas:</th>
+              <th>Ganancias:</th>
             </tr>
           </thead>
           <tbody>
             {% for Item in markets.sort_datas_earnings() %}
-            <tr>
-              <th class="table" scope="row">{{ Item.item_name }}</th>
-              <td class="table" scope="row">{{ Item.item_price }}</td>
-              <td class="table" scope="row">{{ Item.item_sold }}</td>
-              <th class="table" scope="row">{{ Item.item_earnings }}</th>
+            <tr id = "bodytable">
+              <td>{{ Item.item_name }}</td>
+              <td>{{ Item.item_price }}</td>
+              <td>{{ Item.item_sold }}</td>
+              <td>{{ Item.item_earnings }}</td>
             </tr>
             {% endfor %}
           </tbody>
         </table>
+  
+        <h1 class="text-center">Rank De Venta De Productos</h1>
         
-        <h3 class="text-center">Rank De Venta De Productos</h3>
-        
-        <div class="row mt-2 mb-2 p-1">
-          <div class="fw-bold col-3 ">El Producto Mas Vendido:</div>
-          <div class="col-2">{{ markets.sort_datas_up_solds() }}</div>
-          <div class="fw-bold col-3 ">El Producto Menos Vendido:</div>
-          <div class="col-2">{{ markets.sort_datas_low_solds() }}</div>
+        <div id="texto1" style="margin: 0 auto">
+          <h4>El Producto Mas Vendido:</h4>
+          <h5 style="font-weight: bold;">{{ markets.sort_datas_up_solds() }}</h5>
+          <h4>El Producto Menos Vendido:</h4>
+          <h5 style="font-weight: bold;">{{ markets.sort_datas_low_solds() }}</h5>
         </div>
 
-        <div style='text-align:right'>
-        <h10 class="text-right">Nombre: Juan Josue Zuelta Beb</h10>
-        <h10 class="text-right">Carnet: 202006353</h10>
+        <div id="texto2">
+  
+        <h5>Nombre: Juan Josue Zuleta Beb Carnet: 202006353 </h5>
+   
         </div>
       </section>
     </main>
     {% endfor %}
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"
-      integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj"
-      crossorigin="anonymous"
-    ></script>
     
   </body>
 </html>
