@@ -193,6 +193,7 @@ class Graphics:
                 Graphic_Pie.show()
 
                 print("Se Ha Generado Un Grafico De Pastel!")
+
             else:
                 print("Especifique un tipo valido de grafica")
                 print("===>Grafica: Barras, Lineas o Pie<===")
@@ -217,28 +218,31 @@ def bubble_sort_solds(data_to_print: List[Item]):
 
 
 #metodo para extraer instrucciones separadas por ,
-def extract_directions(pointer: list): 
+def extract_directions(pointer: list):
     #crear lista de objetos,unidos,sin espacios y separados por '\n'
     directions_list = item_direction.join(pointer).replace('\n',';').split(';')
     #print(directions_list)
     #recorrer lista de objetos
     for item in directions_list:
-        #separar posiciones por ','
-        position = item.split(',')
-        #la priemra posicion deber removerse el 'NOMBRE' , ':' , '¿' , '"' y quitar espacios
-        name = position[0].replace('Nombre','').replace(':','').replace('¿','').replace('"','').strip()
-        #print(name)
-        #la segunda posicion deber removerse el 'NOMBRE' , ':' , '"' y quitar espacios
-        type = position[1].replace('Grafica','').replace(':','').replace('"','').strip()
-        #la segunda posicion deber removerse el 'NOMBRE' , ':' , '"' y quitar espacios
-        title = position[2].replace('Titulo','').replace(':','').replace('"','').strip()
-        #la segunda posicion deber removerse el 'NOMBRE' , ':' , '"' y quitar espacios
-        titleX = position[3].replace('TituloX','').replace(':','').replace('"','').strip()
-        #la priemra posicion deber removerse el 'NOMBRE' , ':' , '?' , '"' y quitar espacios
-        titleY = position[4].replace('TituloY','').replace(':','').replace('"','').replace('?','').strip()
-        #aniadimos los datos al constructor de items
-        item_directions.append(Direction(name,type,title,titleX,titleY))
-        #retornar lista
+        try:
+            #separar posiciones por ','
+            position = item.split(',')
+            #la priemra posicion deber removerse el 'NOMBRE' , ':' , '¿' , '"' y quitar espacios
+            name = position[0].replace('Nombre','').replace(':','').replace('¿','').replace('"','').strip()
+            #print(name)
+            #la segunda posicion deber removerse el 'NOMBRE' , ':' , '"' y quitar espacios
+            type = position[1].replace('Grafica','').replace(':','').replace('"','').strip()
+            #la segunda posicion deber removerse el 'NOMBRE' , ':' , '"' y quitar espacios
+            title = position[2].replace('Titulo','').replace(':','').replace('"','').strip()
+            #la segunda posicion deber removerse el 'NOMBRE' , ':' , '"' y quitar espacios
+            titleX = position[3].replace('TituloX','').replace(':','').replace('"','').strip()
+            #la priemra posicion deber removerse el 'NOMBRE' , ':' , '?' , '"' y quitar espacios
+            titleY = position[4].replace('TituloY','').replace(':','').replace('"','').replace('?','').strip()
+            #aniadimos los datos al constructor de items
+            item_directions.append(Direction(name,type,title,titleX,titleY))
+            #retornar lista
+        except IndexError:
+            item = 'null'
     return item_directions
         
 #metodo para extraer el anio y el mes
@@ -273,18 +277,21 @@ def extract_Objects(pointer: list):
     #print (product_list)
     #recorrer lista de objetos
     for item in product_list:
-        #separar posiciones por ','
-        position = item.split(',')
-        #la priemra posicion deber removerse el '[' y '"' y quitar espacios
-        name = position[0].replace('[','').replace('"','').strip()
-        #print(name)
-        #segunda posicon debe removerse los espacios
-        price = position[1].strip()
-        #tercera posicion debe removerse el ']' y quitar espacios
-        sold = position[2].replace(']','').strip()
-        #queda la lista de esta forma producto1,25,33;producto2,25,33;...
-        #aniadimos los datos al constructor de items
-        item_products.append(Item(name, price, sold))
+        try:
+            #separar posiciones por ','
+            position = item.split(',')
+            #la priemra posicion deber removerse el '[' y '"' y quitar espacios
+            name = position[0].replace('[','').replace('"','').strip()
+            #print(name)
+            #segunda posicon debe removerse los espacios
+            price = position[1].strip()
+            #tercera posicion debe removerse el ']' y quitar espacios
+            sold = position[2].replace(']','').strip()
+            #queda la lista de esta forma producto1,25,33;producto2,25,33;...
+            #aniadimos los datos al constructor de items
+            item_products.append(Item(name, price, sold))
+        except IndexError:
+            item = 'null'
         #retornar lista
     return item_products
 
@@ -303,7 +310,7 @@ def extract_month_year(data_base: list):
         year.append(data_base.pop(0))
         extract_pointer = data_base[0]
     #parsear el numero del anio extraido
-    year_Name_Parsed = year_Name.join(year).strip()
+    year_Name_Parsed = year_Name.join(year).replace(':','').strip()
     #crear el objeto de la clase market
     markets = Market(month_Name_Parsed,year_Name_Parsed)
     #almacenar el objeto en la lista de general de ventas
@@ -329,10 +336,10 @@ def extract_month_year(data_base: list):
 def load_datas():
     try:
         Tk().withdraw()
-        filename = askopenfilename()
+        filename = askopenfilename(filetypes = [('Files','*.data')])
         input_file = open(filename, 'r+', encoding='utf-8')
     except FileNotFoundError:
-        print('Error al cargar el archivo \n')
+        print('Error Al Cargar El Archivo \n')
     else:
         #leer el archivo linea por linea
         for line in input_file.readlines():
@@ -343,15 +350,16 @@ def load_datas():
         #print(data_base)
         #mandamos a extraer el mes y el anio
         extract_month_year(data_base)
-        print('Se ha cargado la data Exitosamente! \n')
+        print('Se Ha Cargado La Data Exitosamente! \n')
 
 def load_directions():
     try:
         Tk().withdraw()
-        filename = askopenfilename()
+        filename = askopenfilename(filetypes = [('Files','*.lfp')])
+        
         input_file = open(filename, 'r+', encoding='utf-8')
     except FileNotFoundError:
-        print('Error al cargar el archivo \n')
+        print('Error Al Cargar El Archivo \n')
     else:
         #leer el archivo linea por linea
         for line in input_file.readlines():
@@ -362,7 +370,7 @@ def load_directions():
         #print(directions_base)
         #mandamos a extraer el mes y el anio
         extract_keys(directions_base)
-        print('Se han cargado las instrucciones Exitosamente! \n')
+        print('Se Han Cargado Las Instrucciones Exitosamente! \n')
 
 #metodo para exportar a pdf
 def export_report():
@@ -415,6 +423,11 @@ def main_menu():
             print('=======================')
         else:
             print('Opcion Invalida!')
+            print('Presione 1. Para cargar Data')
+            print('Presione 2. Para cargar Instrucciones')
+            print('Presione 3. Para Analizar')
+            print('Presione 4. Para generar un reporte')
+            print('Presione 5. Para Salir')
 
 if __name__ == '__main__':
     main_menu()
